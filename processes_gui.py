@@ -10,8 +10,10 @@ from PySide import QtCore, QtGui
 import processes
 
 class ProcessesModel(QtCore.QAbstractTableModel):
+    """ProcessesModel"""
     def __init__(self, parent=None):
-        super(ProcessesModel, self).__init__(parent)
+        """__init__"""
+        QtCore.QAbstractTableModel.__init__(self, parent)
         
         self._processes_list = []
         self._processes_list = processes.get_processes_list()
@@ -19,14 +21,17 @@ class ProcessesModel(QtCore.QAbstractTableModel):
         self._timer = QtCore.QTimer(self)
         self._timer.timeout.connect(self.update_processes_list)
         self._timer.start(500)
-        
-    def rowCount(self, parent):
+    
+    def rowCount(self, _parent = QtCore.QModelIndex()):
+        """rowCount"""
         return len(self._processes_list)
-        
-    def columnCount(self, parent):
+    
+    def columnCount(self, _parent = QtCore.QModelIndex()):
+        """columnCount"""
         return 3
     
     def data(self, index, role):
+        """data"""
         result = None
         
         if role == QtCore.Qt.DisplayRole:
@@ -35,6 +40,7 @@ class ProcessesModel(QtCore.QAbstractTableModel):
         return result
         
     def update_processes_list(self):
+        """update_processes_list"""
         old_processes_lit = self._processes_list
         self._processes_list = processes.get_processes_list()
         
@@ -43,30 +49,34 @@ class ProcessesModel(QtCore.QAbstractTableModel):
 
         if old_size != new_size:
             if old_size < new_size:
-                print("insert", old_size, new_size)
-                self.beginInsertRows(QtCore.QModelIndex(), old_size, new_size - 1)
-                self.endInsertRows()
+                QtCore.QAbstractTableModel.beginInsertRows(self,
+                                                           QtCore.QModelIndex(), 
+                                                           old_size, 
+                                                           new_size - 1)
+                QtCore.QAbstractTableModel.endInsertRows(self)
             else:
-                print("remove", old_size, new_size)
-                self.beginRemoveRows(QtCore.QModelIndex(), new_size, old_size - 1)
-                self.endRemoveRows()
+                QtCore.QAbstractTableModel.beginRemoveRows(self,
+                                                           QtCore.QModelIndex(), 
+                                                           new_size, 
+                                                           old_size - 1)
+                QtCore.QAbstractTableModel.endRemoveRows(self)
         
         for i in range(min(old_size, new_size)):
             if self._processes_list[i] != old_processes_lit[i]:
-                self.dataChanged.emit(self.index(i, 0), 
-                                 self.index(i, self.columnCount(None)))
+                self.dataChanged.emit(QtCore.QAbstractTableModel.index(self, i, 0), 
+                                      QtCore.QAbstractTableModel.index(self, i, self.columnCount(None)))
     
         
+if __name__ == "__main__":
+    APP = QtGui.QApplication(sys.argv)
 
-APP = QtGui.QApplication(sys.argv)
+    dialog = QtGui.QDialog()
+    table = QtGui.QTableView(dialog)
+    model = ProcessesModel(dialog)
+    table.setModel(model)
+    layout = QtGui.QHBoxLayout()
+    layout.addWidget(table)
+    dialog.setLayout(layout)
+    dialog.show()
 
-dialog = QtGui.QDialog()
-table = QtGui.QTableView(dialog)
-model = ProcessesModel(dialog)
-table.setModel(model)
-layout = QtGui.QHBoxLayout()
-layout.addWidget(table)
-dialog.setLayout(layout)
-dialog.show()
-
-sys.exit(APP.exec_())
+    sys.exit(APP.exec_())
