@@ -52,6 +52,6 @@ def get_processes_list():
             cmd = get_cmd(process_id)
             if len(cmd) > 0:
                 status = get_status(process_id)
-                if status.startswith("R"):
+                if len(status) > 0:
                     result.append(" ".join(status.split()) + " " + cmd)
     return result

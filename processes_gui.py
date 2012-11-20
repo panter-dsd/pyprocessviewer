@@ -13,7 +13,7 @@ class ProcessesModel(QtCore.QAbstractTableModel):
     """ProcessesModel"""
     def __init__(self, parent=None):
         """__init__"""
-        QtCore.QAbstractTableModel.__init__(self, parent)
+        super(ProcessesModel, self).__init__(parent)
 
         self._processes_list = []
         self._processes_list = processes.get_processes_list()
@@ -22,7 +22,7 @@ class ProcessesModel(QtCore.QAbstractTableModel):
         self._timer.timeout.connect(self.update_processes_list)
         self._timer.start(500)
 
-    def rowCount(self, _parent=QtCore.QModelIndex()):
+    def rowCount(self, _parent = QtCore.QModelIndex()):
         """rowCount"""
         return len(self._processes_list)
 
