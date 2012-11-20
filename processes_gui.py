@@ -22,11 +22,11 @@ class ProcessesModel(QtCore.QAbstractTableModel):
         self._timer.timeout.connect(self.update_processes_list)
         self._timer.start(500)
 
-    def rowCount(self, _parent = QtCore.QModelIndex()):
+    def rowCount(self, _parent=QtCore.QModelIndex()):
         """rowCount"""
         return len(self._processes_list)
 
-    def columnCount(self, _parent = QtCore.QModelIndex()):
+    def columnCount(self, _parent=QtCore.QModelIndex()):
         """columnCount"""
         return 3
 
@@ -50,18 +50,23 @@ class ProcessesModel(QtCore.QAbstractTableModel):
         if old_size != new_size:
             if old_size < new_size:
                 QtCore.QAbstractTableModel.beginInsertRows(self,
-                                                           QtCore.QModelIndex(),
+                                                           QtCore.QModelIndex(
+                                                           ),
                                                            old_size,
                                                            new_size - 1)
                 QtCore.QAbstractTableModel.endInsertRows(self)
             else:
                 QtCore.QAbstractTableModel.beginRemoveRows(self,
-                                                           QtCore.QModelIndex(),
+                                                           QtCore.QModelIndex(
+                                                           ),
                                                            new_size,
                                                            old_size - 1)
                 QtCore.QAbstractTableModel.endRemoveRows(self)
 
         for i in range(min(old_size, new_size)):
             if self._processes_list[i] != old_processes_lit[i]:
-                self.dataChanged.emit(QtCore.QAbstractTableModel.index(self, i, 0),
-                                      QtCore.QAbstractTableModel.index(self, i, self.columnCount(None)))
+                self.dataChanged.emit(
+                    QtCore.QAbstractTableModel.index(self, i, 0),
+                    QtCore.QAbstractTableModel.index(self,
+                                                     i,
+                                                     self.columnCount(None)))
