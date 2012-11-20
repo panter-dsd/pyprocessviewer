@@ -18,6 +18,7 @@ def get_cmd(process_id):
         result = cmd_file.readline().replace('\x00', '')
 
     except IOError as error:
+        result = str()
         print(error)
 
     finally:
