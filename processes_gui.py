@@ -30,6 +30,24 @@ class ProcessesModel(QtCore.QAbstractTableModel):
         """columnCount"""
         return 3
 
+    def headerData(self,
+                   section,
+                   orientation,
+                   role = QtCore.Qt.DisplayRole):
+        """headerData"""
+        header_map = dict()
+        header_map[0] = "Status"
+        header_map[1] = "Status string"
+        header_map[2] = "Cmd"
+
+        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+            result = header_map[section]
+        else:
+            result = super(ProcessesModel, self).headerData(section,
+                                                            orientation,
+                                                            role)
+        return result
+
     def data(self, index, role):
         """data"""
         result = None
