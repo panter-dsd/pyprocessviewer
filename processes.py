@@ -10,15 +10,21 @@ import fileinput
 
 PATH = "/proc/"
 
+
 def get_cmd(process_id):
     """get_cmd"""
     try:
         cmd_file = fileinput.input(PATH + process_id + "/cmdline")
         result = cmd_file.readline().replace('\x00', '')
+
+    except IOError as error:
+        print(error)
+
     finally:
         cmd_file.close()
     return result
-    
+
+
 def get_status(process_id):
     """get_status"""
     result = str()
@@ -28,11 +34,15 @@ def get_status(process_id):
             if status_line.startswith("State:"):
                 result = status_line.replace("State:\t", '')
                 break
+    except IOError as error:
+        print(error)
+
     finally:
         status_file.close()
     return result
 
-def get_processes_list():            
+
+def get_processes_list():
     """get_processes_list"""
     result = []
 
